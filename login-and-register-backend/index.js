@@ -1,75 +1,82 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
+const app = express();
+const port = 5000; // Change the port to 5000
+
+app.use(express.json());
+app.use(cors());
 
 async function connection() {
     try {
-        await mongoose.connect("mongodb://localhost:27017/myLoginRegisterDB", {
+        await mongoose.connect("mongodb://mongo:27017/myLoginRegisterDB", {
             useNewUrlParser: true,
             useUnifiedTopology: true
-        })
+          })
+          
 
-        console.log('DB Connected')
+        console.log('DB Connected');
     } catch (err) {
-        console.log('Error')
+        console.error('Error connecting to MongoDB:', err);
     }
 }
 
-connection()
-
-const app = express()
-app.use(express.json())
-app.use(express.urlencoded())
-app.use(cors())
-
-
-
+connection();
 
 const userSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String
-})
+});
 
-const User = new mongoose.model("User", userSchema)
+const User = new mongoose.model("User", userSchema);
 
-//Routes
+// Routes
 app.post("/login", async (req, res) => {
-    const { email, password } = req.body
-    const user = await User.findOne({ email: email })
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email: email });
 
-    if (user) {
-        if (password === user.password) {
-            return res.send({ message: "Login Successfull", user: user })
+        if (user) {
+            if (password === user.password) {
+                return res.send({ message: "Login Successful", user: user });
+            } else {
+                return res.send({ message: "Password didn't match" });
+            }
         } else {
-            return res.send({ message: "Password didn't match" })
+            return res.send({ message: "User not registered", data: user });
         }
-    } else {
-        return res.send({ message: "User not registered" ,data: user })
+    } catch (err) {
+        console.error('Error during login:', err);
+        return res.status(500).send({ message: "Internal Server Error" });
     }
-})
+});
 
 app.post("/register", async (req, res) => {
-    const { name, email, password } = req.body
-    const user = await User.findOne({ email: email })
+    console.log("this is register");
+    try {
+        const { name, email, password } = req.body;
+        const user = await User.findOne({ email: email });
 
-    if (user) {
-        return res.send({ message: "User already registered" })
-    } else {
-        const user = new User({
-            name,
-            email,
-            password
-        });
-        await user.save()
+        if (user) {
+            return res.send({ message: "User already registered" });
+        } else {
+            const newUser = new User({
+                name,
+                email,
+                password
+            });
+            await newUser.save();
 
-        return res.send('Success')
+            return res.send('Success');
+        }
+    } catch (err) {
+        console.error('Error during registration:', err);
+        return res.status(500).send({ message: "Internal Server Error" });
     }
-})
+});
 
-
-
-app.listen(9002, () => {
-    console.log("BE started at port 9002")
-})
+app.listen(port, () => {
+    console.log(`Backend started at port ${port}`);
+});
