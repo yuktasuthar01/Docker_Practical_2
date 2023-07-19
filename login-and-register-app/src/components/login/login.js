@@ -28,8 +28,9 @@ const Login = ({ setLoginUser}) => {
             setLoginUser(res.data.user)
            navigate ('/',{
             state: {
-                name: res.data.user.name,
-                email:res.data.user.email
+                name:res.data.user.name,
+                email:res.data.user.email,
+                password:res.data.user.email
             }
            })
         })
