@@ -78,7 +78,7 @@ app.post("/register", async (req, res) => {
             });
             await newUser.save();
 
-            return res.send('Success');
+            return res.send({message: "Success"});
         }
     } catch (err) {
         console.error('Error during registration:', err);

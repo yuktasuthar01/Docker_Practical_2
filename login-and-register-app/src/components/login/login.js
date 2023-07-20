@@ -30,7 +30,7 @@ const Login = ({ setLoginUser}) => {
             state: {
                 name:res.data.user.name,
                 email:res.data.user.email,
-                password:res.data.user.email
+                password:res.data.user.password
             }
            })
         })

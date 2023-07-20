@@ -22,19 +22,32 @@ const Register = () => {
         })
     }
 
-    const register = () => {
+    const register = async () => {
         const { name, email, password, reEnterPassword } = user
         if( name && email && password && (password === reEnterPassword)){
-            axios.post("http://localhost:5000/register", user)
-            .then( res => {
-                alert(res.data.message)
-                navigate("/login")
-            })
+            // axios.post("http://localhost:5000/register", user)
+            // .then( res => {
+            //     alert(res.data.message)
+            //     navigate("/login")
+            // })
+            try{
+                const {data} = await axios.post("http://localhost:5000/register", user)
+            console.log(data)
+            alert(JSON.stringify(data))
+            navigate('/loginl;')
+                }
+                catch(err){
+                    alert("invlid input")
+                }
+            
+            
+
         } else {
-            alert("invlid input")
+            
         }
         
     }
+            
 
     return (
         <div className="register">
