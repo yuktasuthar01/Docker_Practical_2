@@ -34,7 +34,7 @@ const Register = () => {
                 const {data} = await axios.post("http://localhost:5000/register", user)
             console.log(data)
             alert(JSON.stringify(data))
-            navigate('/loginl;')
+            navigate("/login")
                 }
                 catch(err){
                     alert("invlid input")

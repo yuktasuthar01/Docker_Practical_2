@@ -12,7 +12,7 @@ app.use(cors());
 
 async function connection() {
     try {
-        await mongoose.connect("mongodb://mongo:27017/myLoginRegisterDB", {
+        await mongoose.connect(process.env.MONGO_URL,{
             useNewUrlParser: true,
             useUnifiedTopology: true
           });
@@ -78,7 +78,7 @@ app.post("/register", async (req, res) => {
             });
             await newUser.save();
 
-            return res.send({message: "Success"});
+            return res.send({ message: "Success" });
         }
     } catch (err) {
         console.error('Error during registration:', err);
